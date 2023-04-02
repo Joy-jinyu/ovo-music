@@ -1,0 +1,52 @@
+body {
+  // font-size
+  --font-size-lg: 28px;
+  --font-size-md: 24px;
+  --font-size-sm: 20px;
+  --font-size-xs: 16px;
+  --font-size-xss: 12px;
+
+  // padding
+  --padding-lg: 24px; // containers
+  --padding-md: 16px; // small containers and buttons
+  --padding-sm: 12px; // Form controls and items
+  --padding-xs: 8px; // small items
+  --padding-xss: 4px; // more small$
+
+  // margin
+  --margin-lg: 24px; // containers
+  --margin-md: 16px; // small containers and buttons
+  --margin-sm: 12px; // Form controls and items
+  --margin-xs: 8px; // small items
+  --margin-xss: 4px; // more small
+
+  // color
+  --primary-color: #ff6717;
+  --secondary-color: #8087af;
+  --border-color: #cecece;
+  --white: #fff;
+
+  // 灰色
+  --grey: #999;
+  --grey-second: #666;
+  --grey-ten: #949494;
+
+  // 背景颜色
+  --bg-color: #f5f5f7;
+  --form-bg-color: #f4f8ff;
+  --color-bg-transparent: rgb(255 255 255 / 80%);
+  --color-bg-transparent-secondary: rgb(255 255 255 / 20%);
+  --color-bg-black-secondary: rgb(0 0 0 / 20%);
+
+  // 黑色
+  --black: #000;
+  --black-secondary: #333;
+  --black-ten: #888;
+
+  // 红色
+  --red: #ff0f0f;
+  // 绿色
+  --green: #3fcda8;
+  // 黄色
+  --yellow: #dfed38;
+}

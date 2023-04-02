@@ -1,0 +1,46 @@
+/* stylelint-disable scss/at-mixin-pattern */
+
+@mixin PingFangRegular() {
+  font-family: 'PingFang SC-Regular', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', sans-serif;
+}
+
+@mixin PingFangBold() {
+  font-family: 'PingFang SC-Semibold', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', sans-serif;
+}
+
+@mixin background-image($img) {
+  background-image: url('~@assets/img/#{$img}');
+  background-size: cover;
+  background-clip: border-box;
+  background-position: center;
+}
+
+@mixin border-top-03() {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: $border-color;
+    height: 1px;
+    transform: scaleY(0.3);
+  }
+}
+
+@mixin border-bottom-03() {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: $border-color;
+    height: 1px;
+    transform: scaleY(0.3);
+  }
+}

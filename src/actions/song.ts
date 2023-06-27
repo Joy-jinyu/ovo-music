@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import {
+  BANNER_LIST,
   GETSONGDETAIL,
   GETPLAYLISTDETAIL,
   GETRECOMMENDPLAYLIST,
@@ -13,239 +14,251 @@ import {
   UPDATEPLAYSTATUS,
   UPDATECANPLAYLIST,
   UPDATERECENTTAB,
-  RESETPLAYLIST,
-} from "../constants/song";
-import api from "../services/api";
-import { parse_lrc } from "../utils/common";
+  RESETPLAYLIST
+} from '../constants/song'
+import api from '../services/api'
+import { parse_lrc } from '../utils/common'
+
+// 获取推荐歌单
+export const getBannerList = () => {
+  return async (dispatch) => {
+    const { data } = await api.get('/banner', {
+      type: 1
+    })
+
+    dispatch({
+      type: `song/${BANNER_LIST}`,
+      payload: data.banners
+    })
+  }
+}
 
 export const getSongDetail = (payload) => {
   return {
     type: GETSONGDETAIL,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 // 获取歌单详情
 export const getPlayListDetail = (payload) => {
-  const { id } = payload;
+  const { id } = payload
   return (dispatch) => {
     dispatch({
-      type: RESETPLAYLIST,
-    });
+      type: RESETPLAYLIST
+    })
     api
-      .get("/playlist/detail", {
-        id,
+      .get('/playlist/detail', {
+        id
       })
       .then((res) => {
-        let playListDetailInfo = res.data.playlist;
+        let playListDetailInfo = res.data.playlist
         playListDetailInfo.tracks = playListDetailInfo.tracks.map((item) => {
-          let temp: any = {};
-          temp.name = item.name;
-          temp.id = item.id;
-          temp.ar = item.ar;
-          temp.al = item.al;
-          temp.copyright = item.copyright;
-          return temp;
-        });
+          let temp: any = {}
+          temp.name = item.name
+          temp.id = item.id
+          temp.ar = item.ar
+          temp.al = item.al
+          temp.copyright = item.copyright
+          return temp
+        })
         dispatch({
           type: GETPLAYLISTDETAIL,
           payload: {
             playListDetailInfo,
-            playListDetailPrivileges: res.data.privileges,
-          },
-        });
-      });
-  };
-};
+            playListDetailPrivileges: res.data.privileges
+          }
+        })
+      })
+  }
+}
 
 // 获取推荐歌单
 export const getRecommendPlayList = () => {
   return (dispatch) => {
-    api.get("/personalized").then((res) => {
-      let recommendPlayList = res.data.result;
+    api.get('/personalized').then((res) => {
+      let recommendPlayList = res.data.result
       dispatch({
         type: GETRECOMMENDPLAYLIST,
         payload: {
-          recommendPlayList,
-        },
-      });
-    });
-  };
-};
+          recommendPlayList
+        }
+      })
+    })
+  }
+}
 
 // 获取推荐电台
 export const getRecommendDj = () => {
   return (dispatch) => {
-    api.get("/personalized/djprogram").then((res) => {
-      let recommendDj = res.data.result;
+    api.get('/personalized/djprogram').then((res) => {
+      let recommendDj = res.data.result
       dispatch({
         type: GETRECOMMENDDJ,
         payload: {
-          recommendDj,
-        },
-      });
-    });
-  };
-};
+          recommendDj
+        }
+      })
+    })
+  }
+}
 
 // 获取推荐新音乐
 export const getRecommendNewSong = () => {
   return (dispatch) => {
-    api.get("/personalized/newsong").then((res) => {
-      let recommendNewSong = res.data.result;
+    api.get('/personalized/newsong').then((res) => {
+      let recommendNewSong = res.data.result
       dispatch({
         type: GETRECOMMENDNEWSONG,
         payload: {
-          recommendNewSong,
-        },
-      });
-    });
-  };
-};
+          recommendNewSong
+        }
+      })
+    })
+  }
+}
 
 // 获取推荐精彩节目
 export const getRecommend = () => {
   return (dispatch) => {
-    api.get("/personalized/recommend").then((res) => {
-      let recommend = res.data.result;
+    api.get('/personalized/recommend').then((res) => {
+      let recommend = res.data.result
       dispatch({
         type: GETRECOMMEND,
         payload: {
-          recommend,
-        },
-      });
-    });
-  };
-};
+          recommend
+        }
+      })
+    })
+  }
+}
 
 // 获取歌曲详情信息
 export const getSongInfo = (payload) => {
-  const { id } = payload;
+  const { id } = payload
   return (dispatch) => {
     api
-      .get("/song/detail", {
-        ids: id,
+      .get('/song/detail', {
+        ids: id
       })
       .then((res) => {
-        let songInfo = res.data.songs[0];
+        let songInfo = res.data.songs[0]
         api
-          .get("/song/url", {
-            id,
+          .get('/song/url', {
+            id
           })
           .then((res) => {
-            songInfo.url = res.data.data[0].url;
+            songInfo.url = res.data.data[0].url
             api
-              .get("/lyric", {
-                id,
+              .get('/lyric', {
+                id
               })
               .then((res) => {
-                const lrc = parse_lrc(
-                  res.data.lrc && res.data.lrc.lyric ? res.data.lrc.lyric : ""
-                );
-                res.data.lrclist = lrc.now_lrc;
-                res.data.scroll = lrc.scroll ? 1 : 0;
-                songInfo.lrcInfo = res.data;
+                const lrc = parse_lrc(res.data.lrc && res.data.lrc.lyric ? res.data.lrc.lyric : '')
+                res.data.lrclist = lrc.now_lrc
+                res.data.scroll = lrc.scroll ? 1 : 0
+                songInfo.lrcInfo = res.data
                 dispatch({
                   type: GETSONGINFO,
                   payload: {
-                    currentSongInfo: songInfo,
-                  },
-                });
+                    currentSongInfo: songInfo
+                  }
+                })
               })
               .catch((err) => {
-                console.log("获取歌词失败", err);
+                console.log('获取歌词失败', err)
                 dispatch({
                   type: GETSONGINFO,
                   payload: {
-                    currentSongInfo: songInfo,
-                  },
-                });
-              });
+                    currentSongInfo: songInfo
+                  }
+                })
+              })
           })
           .catch((err) => {
-            console.log("获取歌曲url失败", err);
+            console.log('获取歌曲url失败', err)
             dispatch({
               type: GETSONGINFO,
               payload: {
-                currentSongInfo: songInfo,
-              },
-            });
-          });
-      });
-  };
-};
+                currentSongInfo: songInfo
+              }
+            })
+          })
+      })
+  }
+}
 
 // 切换播放模式
 export const changePlayMode = (payload) => {
   return {
     type: CHANGEPLAYMODE,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 // 更新播放状态
 export const updatePlayStatus = (payload) => {
   return {
     type: UPDATEPLAYSTATUS,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 // 喜欢音乐
 export const likeMusic = (payload) => {
-  const { like, id } = payload;
+  const { like, id } = payload
   return (dispatch) => {
     api
-      .get("/like", {
+      .get('/like', {
         id,
-        like,
+        like
       })
       .then((res) => {
-        let changeFlag = res.data.code;
+        let changeFlag = res.data.code
         if (changeFlag === 200) {
           dispatch({
             type: UPDATELIKEMUSICLIST,
             payload: {
               like,
-              id,
-            },
-          });
+              id
+            }
+          })
         }
-      });
-  };
-};
+      })
+  }
+}
 
 // 获取喜欢音乐列表
 export const getLikeMusicList = (payload) => {
-  const { id } = payload;
+  const { id } = payload
   return (dispatch) => {
     api
-      .get("/likelist", {
-        uid: id,
+      .get('/likelist', {
+        uid: id
       })
       .then((res) => {
         dispatch({
           type: GETLIKEMUSICLIST,
           payload: {
-            likeMusicList: res.data.ids || [],
-          },
-        });
-      });
-  };
-};
+            likeMusicList: res.data.ids || []
+          }
+        })
+      })
+  }
+}
 
 // 更新播放列表
 export const updateCanplayList = (payload) => {
   return {
     type: UPDATECANPLAYLIST,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 // 更新最近播放tab
 export const updateRecentTab = (payload) => {
   return {
     type: UPDATERECENTTAB,
-    payload,
-  };
-};
+    payload
+  }
+}

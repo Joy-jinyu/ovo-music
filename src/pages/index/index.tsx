@@ -7,45 +7,27 @@ import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
 import classnames from 'classnames'
 import CLoading from '@components/CLoading'
 import CMusic from '@components/CMusic'
-import api from '@services/api'
 import { songState } from '@/reducers/song'
 
-import { getRecommend, getRecommendDj, getRecommendNewSong, updatePlayStatus } from '@/actions/song'
+import { getRecommend, getRecommendDj, getRecommendNewSong, updatePlayStatus, getBannerList } from '@/actions/song'
+import { useAppDispatch } from '@/store'
 
 import './index.scss'
 
-interface Banner {
-  typeTitle: string
-  pic: string
-  bannerId: number
-}
-
 const Home = () => {
   const song = useSelector(songState)
+  const dispatch = useAppDispatch()
 
   const [current, setCurrent] = useState(0)
-  const [bannerList, setBannerList] = useState<Array<Banner>>([])
   const [showLoading] = useState(false)
-  const { currentSongInfo, isPlaying, canPlayList } = song
+  const { bannerList, currentSongInfo, isPlaying, canPlayList } = song
 
   useEffect(() => {
     getRecommendNewSong()
     getRecommendDj()
     getRecommend()
-    getBanner()
-  })
-
-  const getBanner = () => {
-    api
-      .get('/banner', {
-        type: 1
-      })
-      .then(({ data }) => {
-        if (data.banners) {
-          setBannerList(data.banners)
-        }
-      })
-  }
+    dispatch(getBannerList())
+  }, [dispatch])
 
   const goPage = () => {
     Taro.showToast({

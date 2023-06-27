@@ -15,7 +15,8 @@ import {
   UPDATEPLAYSTATUS,
   UPDATECANPLAYLIST,
   UPDATERECENTTAB,
-  RESETPLAYLIST
+  RESETPLAYLIST,
+  REDUCER_NAME
 } from '../constants/song'
 
 import { songType } from '../constants/commonType'
@@ -63,7 +64,7 @@ const INITIAL_STATE: songType = {
 }
 
 export const songSlice = createSlice({
-  name: 'song',
+  name: REDUCER_NAME,
   initialState: INITIAL_STATE,
   reducers: {
     [GETPLAYLISTDETAIL]: (state, action) => {

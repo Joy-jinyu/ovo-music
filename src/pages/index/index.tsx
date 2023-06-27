@@ -18,7 +18,7 @@ const Home = () => {
   const song = useSelector(songState)
   const dispatch = useAppDispatch()
 
-  const [current, setCurrent] = useState(0)
+  const [current] = useState(0)
   const [showLoading] = useState(false)
   const { bannerList, currentSongInfo, isPlaying, canPlayList } = song
 
@@ -37,10 +37,11 @@ const Home = () => {
   }
 
   const switchTab = (value) => {
-    setCurrent(value)
-    // Taro.reLaunch({
-    //   url: '/pages/my/index'
-    // })
+    if (value === 1) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      })
+    }
   }
 
   return (

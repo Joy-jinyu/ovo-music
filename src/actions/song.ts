@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
+import { dispatchType } from '@/utils/connect'
 import {
+  REDUCER_NAME,
   BANNER_LIST,
   GETSONGDETAIL,
   GETPLAYLISTDETAIL,
@@ -14,21 +16,24 @@ import {
   UPDATEPLAYSTATUS,
   UPDATECANPLAYLIST,
   UPDATERECENTTAB,
-  RESETPLAYLIST
-} from '../constants/song'
-import api from '../services/api'
-import { parse_lrc } from '../utils/common'
+  RESETPLAYLIST,
+  API_BANNER_LIST
+} from '@/constants/song'
+import api from '@/services/api'
+import { parse_lrc } from '@/utils/common'
+
+const songDispatchType = dispatchType(REDUCER_NAME)
 
 // 获取推荐歌单
 export const getBannerList = () => {
   return async (dispatch) => {
-    const { data } = await api.get('/banner', {
+    const { banners } = await api.get(API_BANNER_LIST, {
       type: 1
     })
 
     dispatch({
-      type: `song/${BANNER_LIST}`,
-      payload: data.banners
+      type: songDispatchType(BANNER_LIST),
+      payload: banners
     })
   }
 }

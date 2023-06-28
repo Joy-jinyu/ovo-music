@@ -1,5 +1,2 @@
-// 接口 - 登录二维码所需key
-export const API_QR_KEY = '/login/qr/key'
-
-// 接口 - 登录二维码所需key (login/qr/create?key=xxx)
-export const API_QR_CODE = '/login/qr/create'
+// 接口 - 获取首页banner推荐位
+export const API_BANNER_LIST = '/banner'

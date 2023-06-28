@@ -1,9 +1,14 @@
 import Taro from '@tarojs/taro'
-import { useState } from 'react'
-import { View, Input } from '@tarojs/components'
+import { useEffect, useRef, useState } from 'react'
+import { View, Input, CoverImage } from '@tarojs/components'
 import { AtIcon, AtButton, AtToast } from 'taro-ui'
 import CTitle from '@/components/CTitle'
 import api from '@/services/api'
+import { createQRCode, checkLoginStatus } from '@/actions/common'
+import { useAppDispatch } from '@/store'
+import { commonState } from '@/reducers/common'
+import { useSelector } from 'react-redux'
+
 import './index.scss'
 
 type InputType = 'phone' | 'password'
@@ -14,6 +19,18 @@ const Login = () => {
   const [phone, setPhone] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [tip, setTip] = useState<string>('')
+  const timerRef = useRef<NodeJS.Timer>()
+  const dataRef = useRef<any>()
+
+  const dispatch = useAppDispatch()
+  const { qrCode, unikey, userInfo } = useSelector(commonState)
+
+  dataRef.current = {
+    unikey,
+    userInfo
+  }
+
+  console.log(qrCode, unikey, userInfo)
 
   function handleLoginStatus(res) {
     const { code } = res.data
@@ -71,6 +88,24 @@ const Login = () => {
     }
   }
 
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      const { userInfo: _userInfo, unikey: _unikey } = dataRef.current
+      if (_userInfo) {
+        clearInterval(timerRef.current)
+        return
+      }
+      if (_unikey) {
+        dispatch(checkLoginStatus({ unikey: _unikey }))
+      }
+    }, 10 * 1000)
+    dispatch(createQRCode())
+
+    return () => {
+      clearInterval(timerRef.current)
+    }
+  }, [dispatch])
+
   return (
     <View className="login_container">
       <CTitle isFixed={false} />
@@ -102,6 +137,7 @@ const Login = () => {
         <AtButton className="login_content__btn" onClick={() => login()}>
           登录
         </AtButton>
+        <CoverImage className="login_content__qrCode" src={qrCode} />
       </View>
       <AtToast isOpened={showLoading} text="登录中" status="loading" hasMask duration={30000000}></AtToast>
       <AtToast isOpened={showTip} text={tip} hasMask duration={2000}></AtToast>

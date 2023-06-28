@@ -27,9 +27,15 @@ const songDispatchType = dispatchType(REDUCER_NAME)
 // 获取推荐歌单
 export const getBannerList = () => {
   return async (dispatch) => {
-    const { banners } = await api.get(API_BANNER_LIST, {
-      type: 1
-    })
+    const { banners } = await api.get(
+      API_BANNER_LIST,
+      {
+        type: 1
+      },
+      {
+        isComplete: true
+      }
+    )
 
     dispatch({
       type: songDispatchType(BANNER_LIST),

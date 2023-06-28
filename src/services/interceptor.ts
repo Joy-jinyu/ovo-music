@@ -32,23 +32,31 @@ const setCookie = (res: {
 
 const ResponseInterceptor = (chain) => {
   const requestParams = chain.requestParams
+  const { isComplete } = requestParams
+
   return chain.proceed(requestParams).then((res) => {
+    // interceptor是洋葱模型，会执行两次
+    if (!res?.statusCode) {
+      return res
+    }
     setCookie(res)
     if (res.statusCode === HTTP_STATUS.NOT_FOUND) {
-      return logError('api', '请求资源不存在')
+      logError('api', '请求资源不存在')
     } else if (res.statusCode === HTTP_STATUS.BAD_GATEWAY) {
-      return logError('api', '服务端出现了问题')
+      logError('api', '服务端出现了问题')
     } else if (res.statusCode === HTTP_STATUS.FORBIDDEN) {
-      return logError('api', '没有权限访问')
+      logError('api', '没有权限访问')
     } else if (res.statusCode === HTTP_STATUS.AUTHENTICATE) {
       Taro.clearStorage()
       Taro.navigateTo({
         url: '/pages/login/index'
       })
-      return logError('api', '请先登录')
+      logError('api', '请先登录')
     } else if (res.statusCode === HTTP_STATUS.SUCCESS) {
-      return res.data.data
+      return isComplete ? res.data : res.data.data
     }
+
+    return isComplete ? res.data : Promise.reject('服务器异常')
   })
 }
 

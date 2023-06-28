@@ -10,14 +10,12 @@ const baseUrl = 'https://music.ovometa.ink'
 
 export default {
   baseOptions(params, method = 'GET') {
-    let { url, data } = params
-    let contentType = 'application/json'
-    contentType = params.contentType || contentType
+    let { url, data, config = {} } = params
+    const { header, ...reqOption } = config
 
     data = {
       ...data,
       timestamp: new Date().getTime()
-      // cookie: Taro.getStorageSync("cookies"),
     }
 
     const option: OptionType = {
@@ -25,32 +23,33 @@ export default {
       data: data,
       method: method,
       header: {
-        'content-type': contentType
-        // cookie: Taro.getStorageSync('cookies')
+        'content-type': 'application/json',
+        ...header
       },
       mode: 'cors',
       xhrFields: { withCredentials: true },
       error(e) {
         logError('api', '请求接口出现问题', e)
-      }
+      },
+      ...reqOption
     }
     // eslint-disable-next-line
     return Taro.request(option)
   },
-  get(url, data?: object) {
-    let option = { url, data }
+  get(url, data?: object, config?: any) {
+    let option = { url, data, config }
     return this.baseOptions(option)
   },
-  post: function (url, data?: object, contentType?: string) {
-    let params = { url, data, contentType }
-    return this.baseOptions(params, 'POST')
+  post: function (url, data?: object, config?: any) {
+    let option = { url, data, config }
+    return this.baseOptions(option, 'POST')
   },
-  put(url, data?: object) {
-    let option = { url, data }
+  put(url, data?: object, config?: any) {
+    let option = { url, data, config }
     return this.baseOptions(option, 'PUT')
   },
-  delete(url, data?: object) {
-    let option = { url, data }
+  delete(url, data?: object, config?: any) {
+    let option = { url, data, config }
     return this.baseOptions(option, 'DELETE')
   }
 }

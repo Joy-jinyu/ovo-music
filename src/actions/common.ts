@@ -33,9 +33,15 @@ export const createQRCode = () => {
 }
 
 export const getUnikeyCookie = async (unikey) => {
-  const { cookie } = await api.get(API_CHECK_LOGIN_STATUS, {
-    key: unikey
-  })
+  const { cookie } = await api.get(
+    API_CHECK_LOGIN_STATUS,
+    {
+      key: unikey
+    },
+    {
+      isComplete: true
+    }
+  )
 
   Taro.setStorageSync('cookie', cookie)
   return cookie
@@ -49,6 +55,10 @@ export const checkLoginStatus = ({ unikey }) => {
 
       if (!cookie) {
         cookie = await getUnikeyCookie(unikey)
+      }
+
+      if (!cookie) {
+        return ''
       }
 
       const data = await api.post(API_GET_LOGIN_INFO, {
